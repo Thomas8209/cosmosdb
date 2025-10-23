@@ -8,25 +8,6 @@ En lille Blazor Server-app til at oprette og se supporthenvendelser via Cosmos D
 - Listevisning af alle henvendelser.
 - Menu med hurtig adgang til forside, opret og oversigt.
 
-## Kom i gang
-
-1. Hent pakker og byg:
-   bash terminal
-   cd CosmosDb
-   dotnet restore
-   dotnet build
-   ```
-2. Læg Cosmos-info i user secrets:
-   bash terminal
-   dotnet user-secrets set "CosmosDb:ConnectionString" "<din-connection-string>"
-   dotnet user-secrets set "CosmosDb:DatabaseName" "SupportDb"
-   dotnet user-secrets set "CosmosDb:ContainerName" "SupportHenvendelser"
-   ```
-3. Start appen:
-   bash terminal
-   dotnet run
-   
-4. Åbn linket fra konsollen, opret en henvendelse eller se allerede oprettet henvendelser.
 
 ## Cosmos DB via `az`
 
