@@ -1,10 +1,15 @@
 using CosmosDb.Components;
+using CosmosDb.Configuration;
+using CosmosDb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.Configure<CosmosDbOptions>(builder.Configuration.GetSection("CosmosDb"));
+builder.Services.AddSingleton<ISupportHenvendelseService, SupportHenvendelseCosmosService>();
 
 var app = builder.Build();
 

@@ -1,0 +1,67 @@
+@page "/support-list"
+@rendermode InteractiveServer
+@using CosmosDb.Models
+@using CosmosDb.Services
+@inject ISupportHenvendelseService SupportService
+
+<h1>Supporthenvendelser</h1>
+
+@if (_isLoading)
+{
+    <p>Loader henvendelser...</p>
+}
+else if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+else if (_henvendelser.Count == 0)
+{
+    <p>Ingen henvendelser fundet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Navn</th>
+                <th>E-mail</th>
+                <th>Kategori</th>
+                <th>Oprettet (dansk tid)</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in _henvendelser)
+        {
+            <tr>
+                <td>@item.Navn</td>
+                <td>@item.Email</td>
+                <td>@item.Kategori</td>
+                <td>@item.OprettetTidspunktDanskTid.ToString("g")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private readonly List<SupportHenvendelse> _henvendelser = new();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var data = await SupportService.GetAllAsync();
+            _henvendelser.AddRange(data);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Kunne ikke hente henvendelser: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

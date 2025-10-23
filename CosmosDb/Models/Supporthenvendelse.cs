@@ -1,7 +1,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace CosmosDb.Models;
 
@@ -17,8 +17,7 @@ public enum HenvendelsesKategori
 
 public class SupportHenvendelse
 {
-    
-    [JsonPropertyName("id")]
+    [JsonProperty(PropertyName = "id")]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
     [Display(Name = "Navn")]
@@ -34,7 +33,7 @@ public class SupportHenvendelse
 
     [Display(Name = "Telefon")]
     [Phone(ErrorMessage = "Telefonnummeret er ikke gyldigt.")]
-    [StringLength(30)]
+    [StringLength(8)]
     public string? Telefon { get; set; }
 
     [Display(Name = "Kategori")]
@@ -47,7 +46,7 @@ public class SupportHenvendelse
     [DataType(DataType.MultilineText)]
     public string Beskrivelse { get; set; } = string.Empty;
 
-    [Display(Name = "Oprettet (UTC)")]
+    [Display(Name = "Oprettet (dansk tid)")]
     [DataType(DataType.DateTime)]
-    public DateTime OprettetTidspunktUtc { get; set; } = DateTime.UtcNow;
+    public DateTime OprettetTidspunktDanskTid { get; set; }
 }

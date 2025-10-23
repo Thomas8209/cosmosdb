@@ -1,0 +1,104 @@
+@page "/create-support"
+@rendermode InteractiveServer
+@using CosmosDb.Models
+@using CosmosDb.Services
+@inject ISupportHenvendelseService SupportService
+
+<h1>Opret supporthenvendelse</h1>
+
+@if (!string.IsNullOrEmpty(_successMessage))
+{
+    <div class="alert alert-success">@_successMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+
+<EditForm EditContext="_editContext" OnValidSubmit="HandleValidSubmit" FormName="createSupport">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label" for="navn">Navn</label>
+        <InputText id="navn" class="form-control" @bind-Value="_model.Navn" />
+        <ValidationMessage For="@(() => _model.Navn)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="email">E-mail</label>
+        <InputText id="email" class="form-control" @bind-Value="_model.Email" />
+        <ValidationMessage For="@(() => _model.Email)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="telefon">Telefon</label>
+        <InputText id="telefon" class="form-control" @bind-Value="_model.Telefon" />
+        <ValidationMessage For="@(() => _model.Telefon)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="kategori">Kategori</label>
+        <InputSelect id="kategori" class="form-select" @bind-Value="_model.Kategori">
+            @foreach (var kategori in Enum.GetValues<HenvendelsesKategori>())
+            {
+                <option value="@kategori">@kategori</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => _model.Kategori)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="beskrivelse">Beskrivelse</label>
+        <InputTextArea id="beskrivelse" class="form-control" @bind-Value="_model.Beskrivelse" />
+        <ValidationMessage For="@(() => _model.Beskrivelse)" />
+    </div>
+
+    <button class="btn btn-primary" type="submit" disabled="@_isSubmitting">
+        @(_isSubmitting ? "Opretter..." : "Opret henvendelse")
+    </button>
+</EditForm>
+
+@code {
+    private SupportHenvendelse _model = default!;
+    private EditContext _editContext = default!;
+    private bool _isSubmitting;
+    private string? _successMessage;
+    private string? _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        ResetForm();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        _isSubmitting = true;
+        _successMessage = null;
+        _errorMessage = null;
+
+        try
+        {
+            await SupportService.InsertAsync(_model);
+            _successMessage = "Henvendelsen er gemt.";
+            ResetForm();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Noget gik galt: {ex.Message}";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        _model = new SupportHenvendelse();
+        _editContext = new EditContext(_model);
+        StateHasChanged();
+    }
+
+}
